@@ -3,42 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Thyrocare Lucknow · Home Blood Test Collection | Authorised Centre UP166</title>
-  <meta name="description" content="NABL &amp; ILAC-MRA approved Thyrocare Service Centre (UP166), Mansoor Nagar, Lucknow. Thyrocare franchisee for 10 years. Home sample collection for blood, urine, sputum and tissue tests. WhatsApp your prescription and get the best rate within 30 minutes." />
+  <title>{{seo.title}}</title>
+  <meta name="description" content="{{seo.description}}" />
   <meta name="theme-color" content="#0a4fa3" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Thyrocare Lucknow · Lab tests at home, by a certified team" />
-  <meta property="og:description" content="WhatsApp your prescription, get the best rate in 30 minutes. Home sample collection across Lucknow, processed in Thyrocare's own labs." />
-  <meta property="og:image" content="assets/img/photos/doctor-namaste.webp" />
+  <meta property="og:title" content="{{seo.title}}" />
+  <meta property="og:description" content="{{seo.description}}" />
+  <meta property="og:image" content="/assets/img/photos/doctor-namaste.webp" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a4fa3'/%3E%3Cpath d='M26 14h12v12h12v12H38v12H26V38H14V26h12z' fill='%23fff'/%3E%3C/svg%3E" />
-  <link rel="preload" as="image" href="assets/img/photos/doctor-namaste.webp" />
+  <link rel="preload" as="image" href="/assets/img/photos/doctor-namaste.webp" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/styles.css" />
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "MedicalClinic",
-    "name": "Thyrocare Authorised Service Centre – UP166, Lucknow",
-    "description": "NABL & ILAC-MRA approved Thyrocare service centre in Lucknow, Thyrocare franchisee for 10 years. Home collection for blood, urine, sputum and tissue tests.",
-    "telephone": ["+91-7080014014", "+91-9935555674", "+91-7080441100"],
-    "email": "inaxces@gmail.com",
-    "image": "assets/img/photos/doctor-namaste.webp",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "UP166, Mansoor Nagar Tiraha, Near CMS Ashrafabad Branch",
-      "addressLocality": "Lucknow",
-      "addressRegion": "Uttar Pradesh",
-      "postalCode": "226003",
-      "addressCountry": "IN"
-    },
-    "areaServed": "Lucknow",
-    "medicalSpecialty": "Pathology"
-  }
-  </script>
+  <script type="application/ld+json">{{{jsonLd}}}</script>
   <!-- Photos: Unsplash (unsplash.com/license), free to use. Medical icons: Healthicons (healthicons.org), CC0. -->
 </head>
 <body>
@@ -95,12 +75,15 @@
 
   <a class="skip" href="#main">Skip to content</a>
 
+  <!-- ========== OFFER BANNER (admin: Settings → Offer banner) ========== -->
+  {{{announcementHtml}}}
+
   <!-- ========== TOP INFO BAR ========== -->
   <div class="topbar">
     <div class="wrap topbar__in">
-      <span><svg class="ic"><use href="#i-pin"/></svg>Mansoor Nagar Tiraha, Lucknow</span>
-      <span class="hide-sm"><svg class="ic"><use href="#h-home-quarantine"/></svg>Home sample collection across Lucknow</span>
-      <a href="tel:+917080014014"><svg class="ic"><use href="#i-phone"/></svg>70800 14014</a>
+      <span><svg class="ic"><use href="#i-pin"/></svg>{{topbar.address}}</span>
+      <span class="hide-sm"><svg class="ic"><use href="#h-home-quarantine"/></svg>{{topbar.note}}</span>
+      <a href="{{phone1.tel}}"><svg class="ic"><use href="#i-phone"/></svg>{{phone1.display}}</a>
     </div>
   </div>
 
@@ -108,11 +91,12 @@
   <header class="header" id="header">
     <div class="wrap header__in">
       <a href="#top" class="brand" aria-label="Thyrocare Authorised Service Centre, Lucknow — home">
-        <img src="assets/img/thyrocare-logo.png" alt="Thyrocare" width="150" height="27" />
+        <img src="/assets/img/thyrocare-logo.png" alt="Thyrocare" width="150" height="27" />
         <span class="brand__tag">Authorised Centre · UP166</span>
       </a>
       <nav class="nav" aria-label="Main">
         <a href="#concerns">Health Checks</a>
+        <a href="#profiles">Checkups</a>
         <a href="#tests">Tests &amp; Prices</a>
         <a href="#home-collection">Home Collection</a>
         <a href="#team">Our Team</a>
@@ -121,12 +105,13 @@
       </nav>
       <div class="header__cta">
         <a class="btn btn--primary btn--sm hide-sm" href="#book"><svg class="ic"><use href="#i-cal"/></svg>Book home visit</a>
-        <a class="icon-btn show-sm" href="tel:+917080014014" aria-label="Call us"><svg class="ic"><use href="#i-phone"/></svg></a>
+        <a class="icon-btn show-sm" href="{{phone1.tel}}" aria-label="Call us"><svg class="ic"><use href="#i-phone"/></svg></a>
         <button class="icon-btn show-sm" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu"><svg class="ic"><use href="#i-menu"/></svg></button>
       </div>
     </div>
     <div class="mmenu" id="mobileMenu" hidden>
       <nav class="wrap" aria-label="Mobile">
+        <a href="#profiles">Full Body Checkups</a>
         <a href="#concerns">Health Checks by Concern</a>
         <a href="#tests">Tests &amp; Prices</a>
         <a href="#prescription">Upload Prescription</a>
@@ -144,10 +129,10 @@
     <section class="hero" id="top">
       <div class="wrap hero__grid">
         <div class="hero__copy">
-          <p class="badge reveal"><svg class="ic"><use href="#i-shield"/></svg>NABL &amp; ILAC-MRA approved Thyrocare centre</p>
-          <h1 class="reveal">Lab tests at home in Lucknow, <span class="hl">by a team you can trust.</span></h1>
-          <p class="hindi reveal" lang="hi">घर बैठे जाँच, पूरे भरोसे के साथ।</p>
-          <p class="lead reveal">Lucknow's trusted Thyrocare centre for <strong>10 years</strong>. WhatsApp your prescription and get the best rate <strong>within 30 minutes</strong>. A certified collector comes to your home, and your sample is tested in Thyrocare's own labs.</p>
+          <p class="badge reveal"><svg class="ic"><use href="#i-shield"/></svg>{{hero.badge}}</p>
+          <h1 class="reveal">{{hero.title}} <span class="hl">{{hero.highlight}}</span></h1>
+          <p class="hindi reveal" lang="hi">{{hero.hindi}}</p>
+          <p class="lead reveal">{{{heroLeadHtml}}}</p>
           <div class="hero__ctas reveal">
             <a class="btn btn--primary btn--lg" href="#book"><svg class="ic"><use href="#i-home"/></svg>Book home collection</a>
             <a class="btn btn--wa btn--lg" href="#prescription"><svg class="ic"><use href="#i-wa"/></svg>Send prescription</a>
@@ -164,7 +149,7 @@
         <div class="hero__visual reveal">
           <div class="hero__blob" aria-hidden="true"></div>
           <div class="hero__photo">
-            <img src="assets/img/photos/doctor-namaste.webp" alt="Smiling Indian woman doctor in a white coat with a stethoscope, greeting with a namaste" width="760" height="900" fetchpriority="high" />
+            <img src="/assets/img/photos/doctor-namaste.webp" alt="Smiling Indian woman doctor in a white coat with a stethoscope, greeting with a namaste" width="760" height="900" fetchpriority="high" />
           </div>
           <div class="fcard fcard--auth">
             <span class="fcard__ic fcard__ic--blue"><svg class="ic"><use href="#i-shield"/></svg></span>
@@ -184,12 +169,7 @@
       </div>
 
       <div class="wrap">
-        <ul class="facts reveal">
-          <li><span class="facts__ic"><svg class="ic"><use href="#i-award"/></svg></span><div><b>10 years</b><span>Thyrocare franchisee in Lucknow</span></div></li>
-          <li><span class="facts__ic"><svg class="ic"><use href="#i-shield"/></svg></span><div><b>Zero</b><span>Complaints in 10 years</span></div></li>
-          <li><span class="facts__ic"><svg class="ic"><use href="#h-microscope"/></svg></span><div><b>NABL</b><span>&amp; ILAC-MRA approved centre</span></div></li>
-          <li><span class="facts__ic"><svg class="ic"><use href="#i-wa"/></svg></span><div><b>30 min</b><span>Rate reply on WhatsApp</span></div></li>
-        </ul>
+        <ul class="facts reveal">{{{statsHtml}}}</ul>
       </div>
     </section>
 
@@ -205,11 +185,24 @@
       </div>
     </section>
 
+    <!-- ========== HEALTH CHECKUP PROFILES (posters, admin: Profiles) ========== -->
+    <section class="section" id="profiles">
+      <div class="wrap">
+        <header class="sec-head reveal">
+          <p class="eyebrow">Popular health checkups</p>
+          <h2>Full body checkups, <span class="hl">one simple price.</span></h2>
+          <p>Thyrocare Aarogyam &amp; Jaanch profiles. Tap a checkup to see every test it includes.</p>
+        </header>
+        <div class="posters" id="posterRail"></div>
+        <p class="fine">Prices are offer prices and valid for a limited period. Ask on WhatsApp for today's best rate.</p>
+      </div>
+    </section>
+
     <!-- ========== HOME COLLECTION ========== -->
     <section class="section" id="home-collection">
       <div class="wrap split">
         <div class="photo-card reveal">
-          <img src="assets/img/photos/blood-draw.webp" alt="Healthcare worker in gloves gently collecting a blood sample from a patient's arm" loading="lazy" width="1100" height="733" />
+          <img src="/assets/img/photos/blood-draw.webp" alt="Healthcare worker in gloves gently collecting a blood sample from a patient's arm" loading="lazy" width="1100" height="733" />
           <div class="photo-card__tag"><svg class="ic"><use href="#h-health-worker"/></svg><span><b>Certified collector</b>at your doorstep</span></div>
         </div>
         <div class="split__copy reveal">
@@ -258,8 +251,9 @@
 
         <div class="toolbar reveal">
           <div class="tabs" role="tablist" aria-label="Test type">
-            <button class="tab is-active" role="tab" aria-selected="true" data-mode="packages">Jaanch Packages</button>
-            <button class="tab" role="tab" aria-selected="false" data-mode="tests">Single Tests</button>
+            <button class="tab is-active" role="tab" aria-selected="true" data-mode="profile">Full Body Checkups</button>
+            <button class="tab" role="tab" aria-selected="false" data-mode="package">Jaanch Packages</button>
+            <button class="tab" role="tab" aria-selected="false" data-mode="test">Single Tests</button>
           </div>
           <label class="search">
             <svg class="ic"><use href="#i-search"/></svg>
@@ -284,18 +278,13 @@
           <p class="eyebrow eyebrow--light">Quality you can verify</p>
           <h2>NABL-approved centre. <span class="hl">Thyrocare's accredited labs.</span></h2>
           <p>Not just the lab: our Mansoor Nagar centre itself is approved by NABL &amp; ILAC-MRA. And every sample we collect is processed by Thyrocare Technologies Ltd., never an unknown local lab.</p>
-          <ul class="labfacts">
-            <li><span><svg class="ic"><use href="#i-shield"/></svg></span><div><b>Only centre in the region approved by NABL &amp; ILAC-MRA</b><small>Thyrocare Service Centre UP166, Mansoor Nagar</small></div></li>
-            <li><span><svg class="ic"><use href="#i-award"/></svg></span><div><b>India's first 100% NABL-accredited diagnostic chain</b><small>Thyrocare Technologies Ltd.*</small></div></li>
-            <li><span><svg class="ic"><use href="#h-microscope"/></svg></span><div><b>40+ advanced labs across India</b><small>Including Gomti Nagar, Lucknow*</small></div></li>
-            <li><span><svg class="ic"><use href="#i-pin"/></svg></span><div><b>CP-67, Viraj Khand, Gomti Nagar, Lucknow</b><small>Thyrocare lab in Lucknow</small></div></li>
-          </ul>
-          <p class="fine fine--light">*As stated by Thyrocare Technologies Ltd. on thyrocare.com</p>
+          <ul class="labfacts">{{{labFactsHtml}}}</ul>
+          {{{labFootnote}}}
         </div>
         <div class="lab-collage reveal">
-          <img class="lab-collage__a" src="assets/img/photos/lab-microscope.webp" alt="Lab scientist examining a sample under a microscope" loading="lazy" width="900" height="600" />
-          <img class="lab-collage__b" src="assets/img/photos/sample-tubes.webp" alt="Rows of blood sample collection tubes with coloured caps in a laboratory rack" loading="lazy" width="900" height="600" />
-          <img class="lab-collage__c" src="assets/img/photos/lab-pipette.webp" alt="Lab technician using a pipette with test tubes" loading="lazy" width="800" height="533" />
+          <img class="lab-collage__a" src="/assets/img/photos/lab-microscope.webp" alt="Lab scientist examining a sample under a microscope" loading="lazy" width="900" height="600" />
+          <img class="lab-collage__b" src="/assets/img/photos/sample-tubes.webp" alt="Rows of blood sample collection tubes with coloured caps in a laboratory rack" loading="lazy" width="900" height="600" />
+          <img class="lab-collage__c" src="/assets/img/photos/lab-pipette.webp" alt="Lab technician using a pipette with test tubes" loading="lazy" width="800" height="533" />
         </div>
       </div>
     </section>
@@ -308,7 +297,7 @@
           <h2>Upload your prescription. <span class="hl">Get rates in 30 min.</span></h2>
           <p>Don't understand your doctor's handwriting? That's our job. Send the slip and we'll read it, list the tests, and send you the best rate.</p>
           <ul class="checks checks--compact">
-            <li><span><svg class="ic"><use href="#i-check"/></svg></span><div>Private: sent only to our team on WhatsApp</div></li>
+            <li><span><svg class="ic"><use href="#i-check"/></svg></span><div>Private: seen only by our team</div></li>
             <li><span><svg class="ic"><use href="#i-check"/></svg></span><div>No obligation to book</div></li>
             <li><span><svg class="ic"><use href="#i-check"/></svg></span><div>Or just type test names. That works too.</div></li>
           </ul>
@@ -327,10 +316,16 @@
               <div class="drop__file"><span id="rxName"></span> · <span class="link">Change</span></div>
             </div>
           </label>
-          <label class="field">
-            <span>Your name (optional)</span>
-            <input id="rxNameInput" type="text" placeholder="e.g. Ayesha Khan" autocomplete="name" />
-          </label>
+          <div class="form__row">
+            <label class="field">
+              <span>Your name</span>
+              <input id="rxNameInput" type="text" placeholder="e.g. Ayesha Khan" autocomplete="name" maxlength="80" />
+            </label>
+            <label class="field">
+              <span>Mobile (optional)</span>
+              <input id="rxPhoneInput" type="tel" inputmode="tel" placeholder="So we can call back" autocomplete="tel-national" maxlength="18" />
+            </label>
+          </div>
 
           <!-- Phones: 2 steps (open chat, then share the photo into it) -->
           <ol class="rx-steps" id="rxSteps" hidden>
@@ -341,7 +336,7 @@
             </li>
             <li id="rxStep2">
               <span class="rx-steps__n">2</span>
-              <div><b>Send the photo</b><small>Choose WhatsApp, then pick <b>Thyrocare UP166</b> (70800 14014) from recent chats.</small></div>
+              <div><b>Send the photo</b><small>Choose WhatsApp, then pick <b>Thyrocare UP166</b> ({{wa.display}}) from recent chats.</small></div>
               <button class="btn btn--wa btn--sm" id="rxShare" type="button"><svg class="ic"><use href="#i-share"/></svg>Send photo</button>
             </li>
           </ol>
@@ -361,16 +356,12 @@
           <h2>Book in 60 seconds. <span class="hl">We'll confirm on WhatsApp.</span></h2>
           <p>For your parents, your children and you. Choose a time that suits you. For fasting tests, an early-morning slot is best.</p>
           <figure class="family">
-            <img src="assets/img/photos/family.webp" alt="Smiling mother hugging her laughing daughter on a sofa at home" loading="lazy" width="900" height="600" />
+            <img src="/assets/img/photos/family.webp" alt="Smiling mother hugging her laughing daughter on a sofa at home" loading="lazy" width="900" height="600" />
             <figcaption><svg class="ic"><use href="#h-old-woman"/></svg>Kids to elders, everyone is in safe hands.</figcaption>
           </figure>
           <div class="callbox">
             <p>Prefer to talk to someone?</p>
-            <div class="callbox__nums">
-              <a href="tel:+917080014014"><svg class="ic"><use href="#i-phone"/></svg>70800 14014</a>
-              <a href="tel:+919935555674"><svg class="ic"><use href="#i-phone"/></svg>99355 55674</a>
-              <a href="tel:+917080441100"><svg class="ic"><use href="#i-phone"/></svg>70804 41100</a>
-            </div>
+            <div class="callbox__nums">{{{callNumbersHtml}}}</div>
           </div>
         </div>
 
@@ -438,7 +429,7 @@
           </label>
 
           <button class="btn btn--wa btn--block btn--lg" type="submit"><svg class="ic"><use href="#i-wa"/></svg>Confirm booking on WhatsApp</button>
-          <p class="hint">Your details go straight to our WhatsApp. We don't store them anywhere.</p>
+          <p class="hint">Your details are sent to our WhatsApp and kept safely for our team only.</p>
         </form>
       </div>
     </section>
@@ -516,32 +507,7 @@
           <h2>Good to know</h2>
           <p>Still unsure? <a href="#" data-wa-text="Hi, I have a question: ">Ask us on WhatsApp</a>. A real person replies.</p>
         </header>
-        <div class="faq">
-          <details class="reveal" open>
-            <summary>Is this an official Thyrocare centre?<svg class="ic"><use href="#i-chev"/></svg></summary>
-            <p>Yes. We are a Thyrocare Authorised Service Centre with code <b>UP166</b>, at Mansoor Nagar, Lucknow, and have been a Thyrocare franchisee for <b>10 years</b>. Our centre is approved by <b>NABL &amp; ILAC-MRA</b>, and our team is trained and certified by Thyrocare Technologies Ltd. You can see their certificates in the <a href="#team">team section</a>.</p>
-          </details>
-          <details class="reveal">
-            <summary>Where is my sample actually tested?<svg class="ic"><use href="#i-chev"/></svg></summary>
-            <p>In Thyrocare's own laboratory at CP-67, Viraj Khand, Gomti Nagar, Lucknow.</p>
-          </details>
-          <details class="reveal">
-            <summary>Do I need a doctor's prescription?<svg class="ic"><use href="#i-chev"/></svg></summary>
-            <p>No. You can simply tell us the test names. If you have a prescription, send a photo and we'll work out the tests and the best rate for you within 30 minutes.</p>
-          </details>
-          <details class="reveal">
-            <summary>Do you collect samples at home?<svg class="ic"><use href="#i-chev"/></svg></summary>
-            <p>Yes. Book using the form above or call us, and a certified collector will come to your home at the time you choose. You're also welcome to visit our centre near CMS Ashrafabad.</p>
-          </details>
-          <details class="reveal">
-            <summary>Which samples can you collect?<svg class="ic"><use href="#i-chev"/></svg></summary>
-            <p>Blood, urine, sputum, tissue and more. Thyrocare offers a very wide test menu, so if you don't see your test listed here, just ask.</p>
-          </details>
-          <details class="reveal">
-            <summary>How will I receive my report?<svg class="ic"><use href="#i-chev"/></svg></summary>
-            <p>Reports are shared digitally so you don't have to come back. We'll tell you the expected report time for your specific test when you book.</p>
-          </details>
-        </div>
+        <div class="faq">{{{faqHtml}}}</div>
       </div>
     </section>
 
@@ -552,18 +518,18 @@
           <p class="eyebrow">Visit or call</p>
           <h2>We're at Mansoor Nagar Tiraha.</h2>
           <ul class="clist">
-            <li><span class="clist__ic"><svg class="ic"><use href="#i-pin"/></svg></span><div><b>Thyrocare Authorised Services, UP166</b><p>Mansoor Nagar Tiraha, Near CMS Ashrafabad Branch, Lucknow – 226003</p><a class="link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Mansoor+Nagar+Tiraha+CMS+Ashrafabad+Lucknow+226003">Get directions →</a></div></li>
-            <li><span class="clist__ic"><svg class="ic"><use href="#i-phone"/></svg></span><div><b>Call or WhatsApp</b><p><a href="tel:+917080014014">70800 14014</a> · <a href="tel:+919935555674">99355 55674</a> · <a href="tel:+917080441100">70804 41100</a></p></div></li>
-            <li><span class="clist__ic"><svg class="ic"><use href="#i-mail"/></svg></span><div><b>Email</b><p><a href="mailto:inaxces@gmail.com">inaxces@gmail.com</a><br /><a href="mailto:irfan.up166@thyrocare.com">irfan.up166@thyrocare.com</a></p></div></li>
+            <li><span class="clist__ic"><svg class="ic"><use href="#i-pin"/></svg></span><div><b>Thyrocare Authorised Services, UP166</b><p>{{address}}</p><a class="link" target="_blank" rel="noopener" href="{{mapLink}}">Get directions →</a></div></li>
+            <li><span class="clist__ic"><svg class="ic"><use href="#i-phone"/></svg></span><div><b>Call or WhatsApp</b><p>{{{contactPhonesHtml}}}</p></div></li>
+            <li><span class="clist__ic"><svg class="ic"><use href="#i-mail"/></svg></span><div><b>Email</b><p>{{{emailsHtml}}}</p></div></li>
           </ul>
           <div class="contact__ctas">
-            <a class="btn btn--primary" href="tel:+917080014014"><svg class="ic"><use href="#i-phone"/></svg>Call now</a>
+            <a class="btn btn--primary" href="{{phone1.tel}}"><svg class="ic"><use href="#i-phone"/></svg>Call now</a>
             <a class="btn btn--wa" href="#" data-wa-text="Hi, I'd like to know about a test."><svg class="ic"><use href="#i-wa"/></svg>WhatsApp</a>
           </div>
         </div>
         <div class="map reveal">
           <iframe title="Map: Thyrocare UP166, Mansoor Nagar, Lucknow" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-            src="https://maps.google.com/maps?q=Mansoor%20Nagar%20Tiraha%2C%20CMS%20Ashrafabad%2C%20Lucknow%20226003&amp;z=16&amp;output=embed"></iframe>
+            src="{{mapEmbed}}"></iframe>
         </div>
       </div>
     </section>
@@ -586,9 +552,9 @@
   <footer class="footer">
     <div class="wrap footer__grid">
       <div>
-        <img class="footer__logo" src="assets/img/thyrocare-logo.png" alt="Thyrocare" width="140" height="25" />
-        <p>Thyrocare Authorised Service Centre, UP166, Mansoor Nagar, Near CMS Ashrafabad Branch, Lucknow – 226003.</p>
-        <p>NABL &amp; ILAC-MRA approved · Serving Lucknow for 10 years</p>
+        <img class="footer__logo" src="/assets/img/thyrocare-logo.png" alt="Thyrocare" width="140" height="25" />
+        <p>Thyrocare Authorised Service Centre, UP166, {{address}}.</p>
+        <p>{{footer.note}}</p>
       </div>
       <div>
         <h4>Thyrocare labs</h4>
@@ -597,7 +563,7 @@
       </div>
       <div>
         <h4>Quick links</h4>
-        <p><a href="#tests">Tests &amp; prices</a><br /><a href="#prescription">Upload prescription</a><br /><a href="#book">Book home collection</a><br /><a href="#faq">FAQ</a></p>
+        <p><a href="#profiles">Full body checkups</a><br /><a href="#tests">Tests &amp; prices</a><br /><a href="#prescription">Upload prescription</a><br /><a href="#book">Book home collection</a><br /><a href="#faq">FAQ</a></p>
       </div>
     </div>
     <div class="wrap footer__base">
@@ -608,7 +574,7 @@
 
   <!-- ========== STICKY MOBILE BAR ========== -->
   <div class="mbar" id="mbar">
-    <a href="tel:+917080014014" class="mbar__btn"><svg class="ic"><use href="#i-phone"/></svg>Call</a>
+    <a href="{{phone1.tel}}" class="mbar__btn"><svg class="ic"><use href="#i-phone"/></svg>Call</a>
     <button class="mbar__btn" id="mbarList"><svg class="ic"><use href="#i-list"/></svg>My tests<span class="count" data-count hidden>0</span></button>
     <a href="#book" class="mbar__btn mbar__btn--main"><svg class="ic"><use href="#i-cal"/></svg>Book</a>
     <a href="#" class="mbar__btn mbar__btn--wa" data-wa-text="Hi, I'd like to know the rate for a test."><svg class="ic"><use href="#i-wa"/></svg>WhatsApp</a>
@@ -648,6 +614,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js" defer></script>
+  <script id="site-data" type="application/json">{{{dataJson}}}</script>
+  <script src="/app.js" defer></script>
 </body>
 </html>

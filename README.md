@@ -1,35 +1,80 @@
-# Thyrocare UP166 Lucknow — website
+# Thyrocare UP166 Lucknow — Website + Admin Panel
 
-Static single-page site: `index.html`, `styles.css`, `app.js`, `assets/`. No build step and no server. Upload the folder to any static host (Netlify, Vercel, Hostinger, GitHub Pages).
+A single-page website for the Thyrocare Authorised Service Centre (UP166), Mansoor Nagar, Lucknow, with a private admin panel at **`/admin`** (there is no link to it on the public site).
 
-Bookings, test lists and enquiries are sent to WhatsApp **70800 14014**. To change the number, edit `CONFIG.whatsapp` in `app.js`.
+- **Website:** full body checkup posters (Aarogyam / Jaanch), packages and tests with prices, browse by health concern, home collection booking, prescription upload, certified team, FAQs, map.
+- **Admin panel:** works on phone and computer.
+  - Edit health profiles (posters), packages and tests, the team, FAQs, all website texts, the offer banner and contact numbers.
+  - An inbox of every booking and prescription.
+  - Change the admin username and password.
+- **Stack:** Node.js + Express + MongoDB. No build step. Images and prescriptions are stored in MongoDB, so a MongoDB URL is the only external service needed.
 
-## Prescription upload (one-tap, optional)
+```
+public/            website (index.html is a template the server fills in)
+public/admin/      admin panel
+server/            API, auth, MongoDB, first-run seed data (posters, certificates)
+```
 
-A WhatsApp link can only carry text, so by default the patient attaches the photo in WhatsApp themselves: a share sheet on phones, Ctrl/⌘+V on desktop.
+## Run locally
 
-For true one-tap sending, the browser can upload the photo straight to a free Cloudinary account. The WhatsApp message then contains the photo's link. No server code is needed.
+```bash
+npm install
+cp .env.example .env      # then fill MONGODB_URI and JWT_SECRET
+npm run dev               # http://localhost:3000   admin: http://localhost:3000/admin
+```
 
-1. Create a free account at https://cloudinary.com, ideally signed up with the clinic's email.
-2. Go to **Settings → Upload → Upload presets → Add upload preset**:
-   - Signing mode: **Unsigned**
-   - Folder: `prescriptions`
-   - Save, and copy the preset name.
-3. To accept PDF prescriptions, turn on **Settings → Security → "Allow delivery of PDF and ZIP files"**.
-4. In `app.js`, fill in:
-   ```js
-   upload: { cloudName: "your-cloud-name", preset: "your-preset-name" },
-   ```
-   The cloud name is shown on the Cloudinary dashboard.
+On the first start, the database is filled automatically with:
+- 7 health profiles (with their posters)
+- 24 Jaanch packages and 25 single tests
+- the team with their certificates
+- FAQs and the website texts
 
-If the upload ever fails (no internet, quota reached), the site falls back to the attach-in-WhatsApp flow on its own.
+## First admin login
 
-**Privacy note:** each uploaded file gets a long, unguessable link, but anyone who has that link can open it. Only the clinic receives the link. The clinic should delete old prescriptions from **Cloudinary → Media Library → prescriptions** from time to time.
+| Username | Password |
+|---|---|
+| `admin` | `Thyrocare@166` |
 
-## Content to update
-- Package prices: `PACKAGES` in `app.js`. Entries with `price: null` show "Ask for best rate".
-- Team members and certificates: `TEAM` in `app.js`, with images in `assets/img/certs/`.
-- Hero photo: `assets/img/photos/doctor-namaste.webp`. Replace it with a real photo of the doctor in a portrait ratio of about 760×900.
+The panel forces a new password on first login. To start with your own password instead, set `ADMIN_USERNAME` / `ADMIN_PASSWORD` in `.env` **before** the first start.
+
+Forgot the password? Delete the document in the `admins` collection (MongoDB Atlas → Browse Collections) and restart the app. The default login above is created again.
+
+## MongoDB Atlas (free)
+
+1. Create a free **M0** cluster at https://cloud.mongodb.com.
+2. **Database Access** → add a user with a strong password.
+3. **Network Access** → add `0.0.0.0/0`. This is needed for hosts like Render whose IP addresses change.
+4. **Connect → Drivers** → copy the connection string into `MONGODB_URI`. Put the database name before the `?`, for example `.../thyrocare_up166?retryWrites=true&w=majority`.
+
+## Deploy (Render, Railway or any VPS)
+
+The site now needs a Node server, so GitHub Pages can no longer host it.
+
+**Render.com**
+1. New → **Web Service** → connect this GitHub repo.
+2. Build command: `npm install`. Start command: `npm start`.
+3. Environment variables: `MONGODB_URI`, `JWT_SECRET` (a long random string), `NODE_ENV=production`.
+4. Settings → **Custom Domain** → add your domain and follow the DNS steps. HTTPS is automatic.
+
+Render's free plan sleeps after inactivity, which makes the first visit slow. A paid instance (about $7/month) avoids that for a business site.
+
+**VPS (Hostinger, DigitalOcean…):** install Node 20+, run `npm install`, then `npm start` under `pm2`, behind Nginx with HTTPS (Let's Encrypt).
+
+## How requests reach the clinic
+
+- **Booking / test list:** the patient's WhatsApp opens with the full message to the clinic's number, and a copy is saved in **Admin → Requests**.
+- **Prescription:**
+  1. The photo uploads privately as soon as it is chosen. Only a signed-in admin can open it.
+  2. One tap sends a WhatsApp message with its reference (e.g. *P-1002*).
+  3. The clinic opens Requests to see the photo, then calls or WhatsApps the patient from there.
+
+## Security notes
+- Passwords are hashed with bcrypt. Sessions use an httpOnly, SameSite=strict cookie for 7 days.
+- Changing the password signs out all other devices.
+- Sign-in is rate-limited to 10 attempts per 15 minutes. Public forms are rate-limited too.
+- Uploads are checked by their real file type (JPG, PNG, WEBP, HEIC or PDF) and limited to 8 MB.
+- The admin is never indexed by search engines, and all admin-editable text is escaped before display.
+- The earlier Cloudinary upload preset (`up166_prescriptions`) is no longer used. You can delete it from your Cloudinary account.
 
 ## Credits
-Photos: Unsplash (free under the Unsplash License). Medical icons: Healthicons (CC0).
+Photos: Unsplash (free under the Unsplash License). Medical icons: Healthicons (CC0). Posters and rate cards: Thyrocare.
