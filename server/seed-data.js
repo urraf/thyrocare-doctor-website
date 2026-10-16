@@ -157,6 +157,10 @@ export const FAQS = [
   ["How will I receive my report?", "Reports are shared digitally so you don't have to come back. We'll tell you the expected report time for your specific test when you book."],
 ];
 
+export const AREAS = "Mansoor Nagar, Ashrafabad, Chowk, Nakhas, Aminabad, Daliganj, Thakurganj, Saadatganj, Hussainabad, Kaiserbagh, Hazratganj, Aliganj, Indira Nagar, Gomti Nagar, Rajajipuram, Alambagh and across Lucknow";
+export const SEO_TITLE = "Thyrocare Lucknow | Blood Test at Home, Mansoor Nagar";
+export const SEO_DESCRIPTION = "NABL-approved Thyrocare centre in Lucknow (UP166), 10 years trusted. Home blood test collection, full body checkups from ₹1,999. Rates on WhatsApp in 30 min.";
+
 export const SETTINGS = {
   announcement: { enabled: true, text: "Full body checkup Aarogyam B Pro (59 parameters) now at ₹1,999. Limited period offer.", link: "#profiles" },
   whatsapp: "7080014014",
@@ -187,6 +191,7 @@ export const SETTINGS = {
     { title: "CP-67, Viraj Khand, Gomti Nagar, Lucknow", note: "Thyrocare lab in Lucknow" },
   ],
   footerNote: "NABL & ILAC-MRA approved · Serving Lucknow for 10 years",
-  seoTitle: "Thyrocare Lucknow · Home Blood Test Collection | NABL Approved Centre UP166",
-  seoDescription: "NABL & ILAC-MRA approved Thyrocare Service Centre (UP166), Mansoor Nagar, Lucknow. Thyrocare franchisee for 10 years. Full body checkups, home sample collection, best rates on WhatsApp within 30 minutes.",
+  seoTitle: "Thyrocare Lucknow | Blood Test at Home, Mansoor Nagar",
+  seoDescription: "NABL-approved Thyrocare centre in Lucknow (UP166), 10 years trusted. Home blood test collection, full body checkups from ₹1,999. Rates on WhatsApp in 30 min.",
+  areas: AREAS,
 };

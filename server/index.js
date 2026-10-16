@@ -8,6 +8,7 @@ import { connect, closeDb, getDb, explainDbError } from "./db.js";
 import { seedIfEmpty } from "./seed.js";
 import { renderIndex, PUBLIC_DIR } from "./content.js";
 import { renderCheckup } from "./checkup-page.js";
+import { robotsTxt, sitemapXml, canonicalHost, notFound } from "./seo.js";
 import { authRouter } from "./auth.js";
 import { publicRouter } from "./routes-public.js";
 import { adminRouter, sweepOrphanMedia } from "./routes-admin.js";
@@ -63,6 +64,8 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 app.use(compression());
+app.use(canonicalHost);
+app.get("/robots.txt", robotsTxt);
 
 // ---------- Health check: GET /api/health (for uptime monitors / keep-alive cron jobs) ----------
 // 200 = server and database OK, 503 = server up but database unreachable.
@@ -123,6 +126,7 @@ const sendHome = async (_req, res) => {
 };
 app.get("/", sendHome);
 app.get("/index.html", (_req, res) => res.redirect(301, "/"));
+app.get("/sitemap.xml", sitemapXml);
 
 // One page per health checkup / package
 app.get("/checkup/:slug", async (req, res) => {
@@ -155,8 +159,8 @@ app.use(express.static(PUBLIC_DIR, {
   setHeaders: (res, file) => { if (/\.(js|css|html)$/.test(file)) res.setHeader("Cache-Control", "no-cache"); },
 }));
 
-app.use("/api", (_req, res) => res.status(404).json({ error: "Not found" }));
-app.use((_req, res) => res.redirect("/"));
+// Unknown pages: a real 404 (so Google doesn't index duplicates of the home page).
+app.use(notFound);
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {

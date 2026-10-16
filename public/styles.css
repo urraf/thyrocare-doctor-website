@@ -497,6 +497,8 @@ legend { font-size: .84rem; font-weight: 700; color: var(--ink); margin-bottom: 
 /* ---------- Footer ---------- */
 .footer { background: var(--ink); color: #a8b3c6; padding: 60px 0 24px; font-size: .92rem; }
 .footer__grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 40px; }
+.footer__areas { margin-top: 12px; font-size: .84rem; line-height: 1.7; color: #8f9bb0; }
+.footer__areas b { color: #c9d3e3; }
 .footer__logo { width: 150px; background: #fff; padding: 8px 12px; border-radius: 10px; margin-bottom: 16px; }
 .footer h4 { color: #fff; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
 .footer p + p { margin-top: 8px; }

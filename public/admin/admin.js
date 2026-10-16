@@ -903,7 +903,8 @@
             <div class="form" data-facts></div>
             <button type="button" class="btn btn--sm" data-addfact>${ic("a-plus")}Add point</button>
             ${field("footerNote", "Footer line", s.footerNote, 'maxlength="160"')}
-            ${field("seoTitle", "Google search title", s.seoTitle, 'maxlength="120"')}
+            <label class="field"><span>Areas you serve <em>(shown at the bottom of the website, helps Google)</em></span><textarea name="areas" rows="2" maxlength="600">${esc(s.areas)}</textarea></label>
+            ${field("seoTitle", "Google search title <em>(best under 60 letters)</em>", s.seoTitle, 'maxlength="120"')}
             <label class="field"><span>Google search description</span><textarea name="seoDescription" rows="2" maxlength="300">${esc(s.seoDescription)}</textarea></label>
           </div>
         </details>
@@ -933,7 +934,7 @@
         hero: { badge: v("h_badge"), hindi: v("h_hindi"), title: v("h_title"), highlight: v("h_highlight"), lead: v("h_lead") },
         stats: [0, 1, 2, 3].map((i) => ({ value: v("st_v" + i), label: v("st_l" + i) })),
         labFacts: $$(".pair--del", facts).map((n) => ({ title: $("[name=ft]", n).value, note: $("[name=fn]", n).value })),
-        footerNote: v("footerNote"), seoTitle: v("seoTitle"), seoDescription: v("seoDescription"),
+        footerNote: v("footerNote"), seoTitle: v("seoTitle"), seoDescription: v("seoDescription"), areas: v("areas"),
       };
       if (data.announcement.enabled && !data.announcement.text.trim()) return toast("Please write the offer text, or turn off the banner", true);
       run($("[type=submit]", f), async () => {

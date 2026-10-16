@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { publicData, getSettings, onInvalidate, PUBLIC_DIR } from "./content.js";
 import { esc, safeJson, phoneDisplay } from "./util.js";
+import { SITE_URL, abs, verifyMeta, iconLinks } from "./site.js";
 
 // One page per health checkup / package: /checkup/<slug>
 // Full-page layout (no pop-up), easy to read, shareable on WhatsApp, indexable by Google.
@@ -22,6 +23,7 @@ loadSprite();
 
 const inr = (n) => "₹" + Number(n).toLocaleString("en-IN");
 const ic = (id) => `<svg class="ic" aria-hidden="true"><use href="#${id}"/></svg>`;
+const clip = (t, n) => (t.length <= n ? t : t.slice(0, t.lastIndexOf(" ", n - 1)).replace(/[,.;:]$/, "") + "…");
 const testsWord = (n) => `${n} test${n === 1 ? "" : "s"}`;
 
 function groupsOf(it) {
@@ -40,8 +42,10 @@ function renderPage(it, all, s) {
   const waText = encodeURIComponent(`Hi, I'd like to book ${it.name}${it.price ? ` (${inr(it.price)})` : ""}. Please share the details.`);
   const bookHref = `/?book=${encodeURIComponent(it.id)}#book`;
   const kind = it.type === "profile" ? "Health checkup" : "Jaanch package";
-  const title = `${it.name}${it.price ? ` at ${inr(it.price)}` : ""} · Thyrocare Lucknow (UP166)`;
-  const descr = (it.desc || it.tagline || `${it.name} at Thyrocare Authorised Service Centre, Mansoor Nagar, Lucknow. Home sample collection.`).slice(0, 300);
+  // Search-friendly title (~60 chars) and description (~155 chars)
+  const title = `${it.name}${total ? ` (${total} Tests)` : ""}${it.price ? ` ${inr(it.price)}` : ""} | Thyrocare Lucknow`;
+  const descr = clip(`${it.desc || it.tagline || it.name}${/[.!?]$/.test(it.desc || it.tagline || "") ? "" : "."} Home sample collection in Lucknow by Thyrocare UP166, Mansoor Nagar. Book on WhatsApp.`, 158);
+  const url = `${SITE_URL}/checkup/${it.slug}`;
   const others = all.filter((x) => x.type === "profile" && x.id !== it.id && x.slug).slice(0, 6);
 
   const groupHtml = groups.map((g, i) => {
@@ -54,24 +58,48 @@ function renderPage(it, all, s) {
   }).join("");
 
   const jsonLd = safeJson({
-    "@context": "https://schema.org", "@type": "Product", name: it.name, description: descr,
-    ...(it.image ? { image: it.image } : {}), brand: { "@type": "Brand", name: "Thyrocare" },
-    ...(it.price ? { offers: { "@type": "Offer", priceCurrency: "INR", price: it.price, availability: "https://schema.org/InStock", seller: { "@type": "MedicalClinic", name: "Thyrocare Authorised Service Centre UP166, Lucknow" } } } : {}),
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Product", "@id": `${url}#product`, name: it.name, description: descr, url, sku: it.code || undefined,
+        ...(it.image ? { image: abs(it.image) } : {}), brand: { "@type": "Brand", name: "Thyrocare" },
+        category: "Diagnostic health checkup",
+        ...(it.price ? { offers: { "@type": "Offer", url, priceCurrency: "INR", price: it.price, availability: "https://schema.org/InStock", seller: { "@id": `${SITE_URL}/#clinic`, "@type": "MedicalClinic", name: "Thyrocare Lucknow – Authorised Service Centre UP166" } } } : {}),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+          { "@type": "ListItem", position: 2, name: "Health checkups", item: `${SITE_URL}/#profiles` },
+          { "@type": "ListItem", position: 3, name: it.name, item: url },
+        ],
+      },
+    ],
   });
 
   return `<!doctype html>
-<html lang="en">
+<html lang="en-IN">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(descr)}" />
+  <link rel="canonical" href="${esc(url)}" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#0a4fa3" />
   <meta property="og:type" content="product" />
+  <meta property="og:site_name" content="Thyrocare Lucknow" />
+  <meta property="og:locale" content="en_IN" />
+  <meta property="og:url" content="${esc(url)}" />
   <meta property="og:title" content="${esc(title)}" />
   <meta property="og:description" content="${esc(descr)}" />
-  ${it.image ? `<meta property="og:image" content="${esc(it.image)}" />` : ""}
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a4fa3'/%3E%3Cpath d='M26 14h12v12h12v12H38v12H26V38H14V26h12z' fill='%23fff'/%3E%3C/svg%3E" />
+  <meta property="og:image" content="${esc(abs(it.image || "/assets/img/og-cover.jpg"))}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${esc(title)}" />
+  <meta name="twitter:description" content="${esc(descr)}" />
+  <meta name="twitter:image" content="${esc(abs(it.image || "/assets/img/og-cover.jpg"))}" />
+  ${verifyMeta()}
+  ${iconLinks}
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />

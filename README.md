@@ -68,6 +68,14 @@ Render's free plan sleeps after inactivity, which makes the first visit slow. A 
 
 Point a free monitor (UptimeRobot, cron-job.org, Better Stack) at `https://<your-site>/api/health` every 5–10 minutes. On Render's free plan this also stops the site from going to sleep. In Render you can set **Settings → Health Check Path** to `/api/health`.
 
+## SEO (built in)
+- Canonical links and share previews use `SITE_URL` (default `https://thyrocarelucknow.com`); `www.` redirects to the main address.
+- `/robots.txt` and an automatic `/sitemap.xml` (home + every health checkup page, with poster images).
+- Structured data for Google: MedicalClinic (address, phones, checkup prices), WebSite, FAQPage, and Product + Breadcrumbs on each checkup page.
+- Each checkup with a test list has its own page `/checkup/<name>`; unknown URLs return a real 404.
+- Google title, description and "areas you serve" are editable in **Admin → Website Info → Homepage text**.
+- Search Console: add the domain with a DNS TXT record (recommended), or set `GOOGLE_SITE_VERIFICATION`, then submit `https://thyrocarelucknow.com/sitemap.xml`.
+
 ## How requests reach the clinic
 
 - **Booking / test list:** the patient's WhatsApp opens with the full message to the clinic's number, and a copy is saved in **Admin → Requests**.

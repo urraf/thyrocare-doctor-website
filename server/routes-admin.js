@@ -76,7 +76,7 @@ function sanitizeSettings(b, cur) {
     hero: { badge: str(h.badge, 80), title: str(h.title, 120), highlight: str(h.highlight, 120), hindi: str(h.hindi, 120), lead: str(h.lead, 600) },
     stats: (Array.isArray(b.stats) ? b.stats : []).slice(0, 4).map((s) => ({ value: str(s?.value, 24), label: str(s?.label, 60) })).filter((s) => s.value || s.label),
     labFacts: (Array.isArray(b.labFacts) ? b.labFacts : []).slice(0, 8).map((f) => ({ title: str(f?.title, 120), note: str(f?.note, 120) })).filter((f) => f.title),
-    footerNote: str(b.footerNote, 160), seoTitle: str(b.seoTitle, 120), seoDescription: str(b.seoDescription, 300),
+    footerNote: str(b.footerNote, 160), seoTitle: str(b.seoTitle, 120), seoDescription: str(b.seoDescription, 300), areas: str(b.areas, 600),
     updatedAt: new Date(),
   };
 }
