@@ -4,7 +4,7 @@ import express from "express";
 import helmet from "helmet";
 import compression from "compression";
 import cookieParser from "cookie-parser";
-import { connect, closeDb, explainDbError } from "./db.js";
+import { connect, closeDb, getDb, explainDbError } from "./db.js";
 import { seedIfEmpty } from "./seed.js";
 import { renderIndex, PUBLIC_DIR } from "./content.js";
 import { renderCheckup } from "./checkup-page.js";
@@ -63,6 +63,34 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 app.use(compression());
+
+// ---------- Health check: GET /api/health (for uptime monitors / keep-alive cron jobs) ----------
+// 200 = server and database OK, 503 = server up but database unreachable.
+// The database ping is cached for 15 s, so frequent checks cost nothing.
+const startedAt = Date.now();
+let lastPing = { at: 0, ok: false, ms: null };
+async function pingDb() {
+  if (!dbReady) return { ok: false, ms: null };
+  if (Date.now() - lastPing.at < 15_000) return lastPing;
+  const t = Date.now();
+  try {
+    await Promise.race([getDb().command({ ping: 1 }), new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 3000))]);
+    lastPing = { at: Date.now(), ok: true, ms: Date.now() - t };
+  } catch {
+    lastPing = { at: Date.now(), ok: false, ms: null };
+  }
+  return lastPing;
+}
+app.get(["/api/health", "/healthz"], async (_req, res) => {
+  const db = await pingDb();
+  res.set("Cache-Control", "no-store").status(db.ok ? 200 : 503).json({
+    status: db.ok ? "ok" : "degraded",
+    database: db.ok ? "connected" : dbReady ? "unreachable" : "connecting",
+    dbPingMs: db.ms,
+    uptimeSeconds: Math.round((Date.now() - startedAt) / 1000),
+    time: new Date().toISOString(),
+  });
+});
 
 // Until the database is connected: static files work, everything else gets a friendly 503.
 const downPage = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Thyrocare UP166 Lucknow</title>

@@ -60,6 +60,14 @@ Render's free plan sleeps after inactivity, which makes the first visit slow. A 
 
 **VPS (Hostinger, DigitalOcean…):** install Node 20+, run `npm install`, then `npm start` under `pm2`, behind Nginx with HTTPS (Let's Encrypt).
 
+## Health check (uptime monitors / keep-alive)
+
+`GET /api/health` (also `/healthz`) returns:
+- `200 {"status":"ok","database":"connected",…}` when everything works
+- `503 {"status":"degraded",…}` when the server is up but MongoDB is unreachable
+
+Point a free monitor (UptimeRobot, cron-job.org, Better Stack) at `https://<your-site>/api/health` every 5–10 minutes. On Render's free plan this also stops the site from going to sleep. In Render you can set **Settings → Health Check Path** to `/api/health`.
+
 ## How requests reach the clinic
 
 - **Booking / test list:** the patient's WhatsApp opens with the full message to the clinic's number, and a copy is saved in **Admin → Requests**.
