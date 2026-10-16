@@ -4,7 +4,7 @@ import express from "express";
 import helmet from "helmet";
 import compression from "compression";
 import cookieParser from "cookie-parser";
-import { connect, explainDbError } from "./db.js";
+import { connect, closeDb, explainDbError } from "./db.js";
 import { seedIfEmpty } from "./seed.js";
 import { renderIndex, PUBLIC_DIR } from "./content.js";
 import { renderCheckup } from "./checkup-page.js";
@@ -19,15 +19,27 @@ if (!MONGODB_URI) {
   process.exit(1);
 }
 
-try {
-  await connect(MONGODB_URI, process.env.DB_NAME);
-  await seedIfEmpty();
-} catch (e) {
-  console.error("\n✖ Could not start: " + explainDbError(e) + "\n");
-  process.exit(1);
+// Connect in the background and keep retrying, so the server stays up (showing a
+// "We'll be right back" page) even if the database is briefly unreachable at start.
+let dbReady = false;
+async function startDb() {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await connect(MONGODB_URI, process.env.DB_NAME);
+      await seedIfEmpty();
+      dbReady = true;
+      console.log("✔ Connected to MongoDB");
+      sweepOrphanMedia().catch(() => {});
+      setInterval(() => sweepOrphanMedia().catch(() => {}), 24 * 60 * 60 * 1000).unref();
+      return;
+    } catch (e) {
+      console.error(`✖ Database connection failed (attempt ${attempt}): ${explainDbError(e)} Retrying in 15 seconds…`);
+      await closeDb()?.catch?.(() => {});
+      await new Promise((r) => setTimeout(r, 15_000));
+    }
+  }
 }
-sweepOrphanMedia().catch(() => {});
-setInterval(() => sweepOrphanMedia().catch(() => {}), 24 * 60 * 60 * 1000).unref();
+startDb();
 
 const app = express();
 app.disable("x-powered-by");
@@ -51,6 +63,17 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 app.use(compression());
+
+// Until the database is connected: static files work, everything else gets a friendly 503.
+const downPage = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Thyrocare UP166 Lucknow</title>
+<style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;background:#f3f7fb;color:#0b1b33;text-align:center;padding:20px}a{display:inline-block;margin-top:14px;padding:12px 20px;border-radius:12px;background:#128c4b;color:#fff;text-decoration:none;font-weight:700}</style></head>
+<body><div><h1>We'll be right back</h1><p>Our website is refreshing. Please try again in a minute.</p><a href="https://wa.me/917080014014">WhatsApp us: 70800 14014</a></div></body></html>`;
+app.use((req, res, next) => {
+  if (dbReady || /\.(css|js|png|jpe?g|webp|svg|ico|woff2?)$/i.test(req.path)) return next();
+  res.status(503).set("Retry-After", "15");
+  if (req.path.startsWith("/api/")) return res.json({ error: "The website is starting up. Please try again in a minute." });
+  res.type("html").send(downPage);
+});
 app.use(cookieParser());
 app.use(express.json({ limit: "1mb" }));
 
@@ -67,9 +90,7 @@ const sendHome = async (_req, res) => {
     res.type("html").send(await renderIndex());
   } catch (e) {
     warnDb(e);
-    res.status(503).set("Retry-After", "30").type("html").send(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Thyrocare UP166 Lucknow</title>
-<style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;background:#f3f7fb;color:#0b1b33;text-align:center;padding:20px}a{display:inline-block;margin-top:14px;padding:12px 20px;border-radius:12px;background:#128c4b;color:#fff;text-decoration:none;font-weight:700}</style></head>
-<body><div><h1>We'll be right back</h1><p>Our website is refreshing. Please try again in a minute.</p><a href="https://wa.me/917080014014">WhatsApp us: 70800 14014</a></div></body></html>`);
+    res.status(503).set("Retry-After", "30").type("html").send(downPage);
   }
 };
 app.get("/", sendHome);
@@ -117,4 +138,5 @@ app.use((err, _req, res, _next) => {
   res.status(status).json({ error: message });
 });
 
-app.listen(PORT, () => console.log(`Thyrocare UP166 site on http://localhost:${PORT}  (admin: /admin)`));
+// 0.0.0.0 so hosting platforms (Render, Railway…) can reach the server.
+app.listen(PORT, "0.0.0.0", () => console.log(`Thyrocare UP166 site on http://localhost:${PORT}  (admin: /admin)`));
