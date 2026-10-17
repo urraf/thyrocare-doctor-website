@@ -22,7 +22,13 @@ let lastGoodData = null;
 // Called after every admin change so the next visitor gets fresh content.
 const invalidateHooks = [];
 export const onInvalidate = (fn) => invalidateHooks.push(fn);
-export function invalidate() { cachedHtml = null; cachedData = null; invalidateHooks.forEach((fn) => fn()); }
+export function invalidate() { cachedHtml = null; cachedData = null; cachedAt = 0; invalidateHooks.forEach((fn) => fn()); }
+
+// Pages are also refreshed at least once a minute, so changes made directly in the
+// database (not through /admin) still reach visitors quickly.
+const CACHE_MS = 60_000;
+let cachedAt = 0;
+export function expireIfOld() { if (cachedAt && Date.now() - cachedAt > CACHE_MS) invalidate(); }
 
 export const slugify = (s) => String(s || "").toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "").trim().replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
 
@@ -37,6 +43,7 @@ const publicItem = (d) => ({
 });
 
 export async function publicData() {
+  expireIfOld();
   if (cachedData) return cachedData;
   try { return await loadPublicData(); }
   catch (e) { if (lastGoodData) return lastGoodData; throw e; }
@@ -67,6 +74,7 @@ async function loadPublicData() {
     team: team.map((m) => ({ id: String(m._id), name: m.name, role: m.role, isDoctor: !!m.isDoctor, lead: !!m.lead, cert: mediaUrl(m.cert) })),
   };
   lastGoodData = cachedData;
+  cachedAt = Date.now();
   return cachedData;
 }
 
@@ -162,6 +170,7 @@ function structuredData(s, faqs, data, phones) {
 }
 
 export async function renderIndex() {
+  expireIfOld();
   if (cachedHtml && isProd) return cachedHtml;
   try { return await buildIndex(); }
   catch (e) { if (lastGoodHtml) return lastGoodHtml; throw e; }

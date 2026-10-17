@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { publicData, getSettings, onInvalidate, PUBLIC_DIR } from "./content.js";
+import { publicData, getSettings, onInvalidate, expireIfOld, PUBLIC_DIR } from "./content.js";
 import { esc, safeJson, phoneDisplay } from "./util.js";
 import { SITE_URL, abs, verifyMeta, iconLinks } from "./site.js";
 
@@ -231,6 +231,7 @@ function renderPage(it, all, s) {
 
 // Returns the page HTML, or null when there is no such (visible) checkup.
 export async function renderCheckup(slug) {
+  expireIfOld();
   if (isProd && pages.has(slug)) return pages.get(slug);
   if (!isProd) loadSprite();
   const [data, s] = await Promise.all([publicData(), getSettings()]);
