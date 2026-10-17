@@ -15,7 +15,7 @@ const leadLimiter = rateLimit({
   message: { error: "Too many requests. Please wait a few minutes, or call us." },
 });
 
-const PREFIX = { booking: "B", prescription: "P", enquiry: "E" };
+const PREFIX = { booking: "B", prescription: "P", enquiry: "E", rate: "R" };
 
 export function publicRouter() {
   const r = express.Router();
@@ -44,6 +44,7 @@ export function publicRouter() {
     };
     if (type === "booking" && (!lead.name || !lead.phone)) throw new HttpError(400, "Name and a valid 10-digit mobile number are required");
     if (type === "enquiry" && !lead.items.length) throw new HttpError(400, "Empty test list");
+    if (type === "rate" && (!lead.phone || !lead.items.length)) throw new HttpError(400, "Please enter a valid 10-digit mobile number");
     if (type === "prescription") {
       if (!req.file) throw new HttpError(400, "Please choose your prescription photo");
       lead.file = await saveMedia(req.file.buffer, { kind: "private", allowPdf: true, name: req.file.originalname });

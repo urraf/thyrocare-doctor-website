@@ -588,6 +588,34 @@ dialog::backdrop { background: rgba(11, 27, 51, .55); backdrop-filter: blur(3px)
 .card__params { font-size: .84rem; color: var(--muted); margin-top: -4px; }
 .card__params b { color: var(--teal); }
 
+/* ---------- "Get today's rate" button + pop-up ---------- */
+.ask { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 10px; border-radius: 10px; border: 1.5px solid var(--wa); background: var(--mint); color: var(--wa-2); font-weight: 800; font-size: .84rem; white-space: nowrap; cursor: pointer; transition: background .2s, color .2s; }
+.ask + .add { flex: none; width: 42px; padding: 0; font-size: 0; gap: 0; justify-content: center; }
+.ask + .add .ic { width: 18px; height: 18px; }
+.ask:hover { background: var(--wa); color: #fff; }
+.ask .ic { width: 17px; height: 17px; }
+.ratebox { width: min(440px, 94vw); border-radius: var(--r-lg); background: var(--white); padding: 26px 22px 22px; box-shadow: var(--shadow-lg); }
+.ratebox[open] { animation: zoomIn .2s ease; }
+.ratebox__x { position: absolute; top: 12px; right: 12px; border-radius: 50%; }
+.ratebox h3 { font-size: 1.35rem; font-weight: 800; margin: 2px 40px 4px 0; }
+.ratebox .eyebrow { margin: 0; }
+.ratebox__item { font-weight: 800; color: var(--blue-2); font-size: 1.05rem; }
+.ratebox__sub { color: var(--muted); font-size: .9rem; margin: 6px 0 16px; }
+.ratebox__or { display: flex; align-items: center; gap: 10px; margin: 16px 0 12px; color: var(--muted); font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.ratebox__or::before, .ratebox__or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.ratebox__form { display: grid; gap: 12px; }
+.ratebox__done { text-align: center; display: grid; gap: 8px; justify-items: center; padding: 8px 0 0; }
+.ratebox__done h3 { margin: 4px 0 0; }
+.ratebox__tick { display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; background: var(--mint); color: var(--wa); }
+.ratebox__tick .ic { width: 30px; height: 30px; }
+.cu-rate { display: grid; gap: 10px; padding: 16px 18px; border-radius: var(--r); background: var(--mint); border: 1px solid #bfe6d7; }
+.cu-rate b { color: var(--ink); }
+.cu-rate form { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.cu-rate input { min-height: 46px; padding: 0 12px; border-radius: 11px; border: 1.5px solid var(--line); font: inherit; font-size: 16px; }
+.cu-rate input:focus { outline: none; border-color: var(--blue-2); box-shadow: 0 0 0 4px rgba(11,98,196,.12); }
+.cu-rate .ok { color: var(--wa-2); font-weight: 700; }
+.cu-rate .bad { color: var(--red); font-weight: 600; font-size: .86rem; }
+
 /* ---------- Health checkup page (/checkup/…) ---------- */
 .cu-body { background: var(--bg); }
 .cu { padding-top: 18px; padding-bottom: 60px; }

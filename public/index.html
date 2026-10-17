@@ -627,6 +627,32 @@
     </figure>
   </dialog>
 
+  <!-- ========== GET TODAY'S RATE ========== -->
+  <dialog class="ratebox" id="rateDialog" aria-labelledby="rateTitle">
+    <button class="icon-btn ratebox__x" data-close aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+    <div id="rateAsk">
+      <p class="eyebrow">Today's rate</p>
+      <h3 id="rateTitle">Get today's rate</h3>
+      <p class="ratebox__item" id="rateItem"></p>
+      <p class="ratebox__sub">Rates and offers change often, so we share the latest price with you personally.</p>
+      <button class="btn btn--wa btn--lg btn--block" id="rateWa" type="button"><svg class="ic"><use href="#i-wa"/></svg>Ask on WhatsApp · reply in 30 min</button>
+      <div class="ratebox__or"><span>or we call you</span></div>
+      <form id="rateForm" class="ratebox__form" novalidate>
+        <label class="field"><span>Your name</span><input name="name" type="text" autocomplete="name" maxlength="80" placeholder="e.g. Ayesha Khan" /></label>
+        <label class="field"><span>Mobile number *</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel-national" maxlength="18" placeholder="10-digit mobile" /><em class="err">Enter a valid 10-digit mobile number</em></label>
+        <button class="btn btn--primary btn--lg btn--block" type="submit"><svg class="ic"><use href="#i-phone"/></svg>Call me back with the rate</button>
+        <p class="hint">Your number is only used to call you about this test.</p>
+      </form>
+    </div>
+    <div class="ratebox__done" id="rateDone" hidden>
+      <span class="ratebox__tick"><svg class="ic"><use href="#i-check"/></svg></span>
+      <h3>Thank you!</h3>
+      <p>We'll call you shortly with today's rate for <b id="rateDoneItem"></b>.</p>
+      <p class="hint">Your request number: <b id="rateRef"></b></p>
+      <button class="btn btn--ghost btn--block" data-close type="button">Close</button>
+    </div>
+  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script id="site-data" type="application/json">{{{dataJson}}}</script>

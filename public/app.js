@@ -202,9 +202,10 @@
   $("#listBook").addEventListener("click", () => { drawer.close(); prefillBooking(listNames()); });
 
   /* ---------- Price helpers ---------- */
+  // Price, or a "Get today's rate" button when the clinic hides the price / has none.
   const priceHtml = (t) => t.price
     ? `<div class="price">${inr(t.price)}${t.mrp && t.mrp > t.price ? ` <s>${inr(t.mrp)}</s>` : ""}<small>${t.type === "profile" ? "Offer price" : "Listed price"}</small></div>`
-    : `<div class="price price--ask">Ask for best rate</div>`;
+    : `<button type="button" class="ask" data-ask="${t.id}"><svg class="ic"><use href="#i-wa"/></svg><span>Get today's rate</span></button>`;
 
   /* ---------- Poster rail (health checkup profiles) ---------- */
   const posterItems = BY_TYPE.profile.filter((p) => p.image);
@@ -231,6 +232,62 @@
     history.replaceState(null, "", location.pathname + "#book");
     setTimeout(() => prefillBooking([t.name]), 50);
   }
+
+  /* ---------- Get today's rate ---------- */
+  const rateDlg = $("#rateDialog");
+  const rateForm = $("#rateForm");
+  let rateItem = null;
+  function openRate(id) {
+    rateItem = ALL.get(id);
+    if (!rateItem) return;
+    $("#rateItem").textContent = rateItem.name;
+    $("#rateAsk").hidden = false;
+    $("#rateDone").hidden = true;
+    const draft = store.get(CONFIG.draftKey, {});
+    if (!rateForm.elements.name.value && draft.name) rateForm.elements.name.value = draft.name;
+    if (!rateForm.elements.phone.value && draft.phone) rateForm.elements.phone.value = draft.phone;
+    rateForm.elements.phone.closest(".field").classList.remove("is-invalid");
+    rateDlg.showModal();
+  }
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-ask]");
+    if (b) openRate(b.dataset.ask);
+  });
+  $("#rateWa").addEventListener("click", () => {
+    if (!rateItem) return;
+    openWA(`Hi, please share today's rate for ${rateItem.name}. (Sent from your website)`);
+    rateDlg.close();
+  });
+  rateForm.addEventListener("input", (e) => e.target.closest(".field")?.classList.remove("is-invalid"));
+  rateForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const phone = cleanPhone(rateForm.elements.phone.value);
+    if (!/^[6-9]\d{9}$/.test(phone)) {
+      rateForm.elements.phone.closest(".field").classList.add("is-invalid");
+      rateForm.elements.phone.focus();
+      return;
+    }
+    const btn = $("[type=submit]", rateForm);
+    btn.disabled = true;
+    try {
+      const fd = new FormData();
+      fd.append("type", "rate");
+      fd.append("name", rateForm.elements.name.value.trim());
+      fd.append("phone", phone);
+      fd.append("items", rateItem.name);
+      const res = await fetch("/api/leads", { method: "POST", body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Could not send. Please try WhatsApp or call us.");
+      $("#rateDoneItem").textContent = rateItem.name;
+      $("#rateRef").textContent = data.ref;
+      $("#rateAsk").hidden = true;
+      $("#rateDone").hidden = false;
+    } catch (err) {
+      toast(err.message, 5000);
+    } finally {
+      btn.disabled = false;
+    }
+  });
 
   /* ---------- Test grid ---------- */
   let mode = BY_TYPE.profile.length ? "profile" : "package";

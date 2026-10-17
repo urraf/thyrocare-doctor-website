@@ -39,7 +39,9 @@ function renderPage(it, all, s) {
   const openAll = listed <= 40; // long lists start collapsed so the page stays readable
   const wa = s.whatsapp || (s.phones || [])[0] || "";
   const p1 = (s.phones || [])[0] || wa;
-  const waText = encodeURIComponent(`Hi, I'd like to book ${it.name}${it.price ? ` (${inr(it.price)})` : ""}. Please share the details.`);
+  const waText = encodeURIComponent(it.price
+    ? `Hi, I'd like to book ${it.name} (${inr(it.price)}). Please share the details.`
+    : `Hi, please share today's rate for ${it.name}. (Sent from your website)`);
   const bookHref = `/?book=${encodeURIComponent(it.id)}#book`;
   const kind = it.type === "profile" ? "Health checkup" : "Jaanch package";
   // Search-friendly title (~60 chars) and description (~155 chars)
@@ -143,15 +145,24 @@ function renderPage(it, all, s) {
         <div class="cu-price">
           <div>
             ${it.price ? `<b>${inr(it.price)}</b>${it.mrp && it.mrp > it.price ? ` <s>${inr(it.mrp)}</s>` : ""}<small>${it.type === "profile" ? "Offer price · " : ""}Home collection available</small>`
-              : `<b class="cu-price__ask">Ask for best rate</b><small>We reply on WhatsApp within 30 minutes</small>`}
+              : `<b class="cu-price__ask">Get today's rate</b><small>Rates change often. We share the latest price on WhatsApp within 30 minutes.</small>`}
           </div>
           ${total ? `<span class="cu-chip">${esc(testsWord(total))}</span>` : ""}
         </div>
 
         <div class="cu-ctas">
           <a class="btn btn--primary btn--lg" href="${bookHref}">${ic("i-home")}Book home collection</a>
-          <a class="btn btn--wa btn--lg" href="https://wa.me/91${esc(wa)}?text=${waText}" target="_blank" rel="noopener">${ic("i-wa")}Ask on WhatsApp</a>
+          <a class="btn btn--wa btn--lg" href="https://wa.me/91${esc(wa)}?text=${waText}" target="_blank" rel="noopener">${ic("i-wa")}${it.price ? "Ask on WhatsApp" : "Get rate on WhatsApp"}</a>
         </div>
+        ${it.price ? "" : `
+        <div class="cu-rate" data-rate="${esc(it.name)}">
+          <p><b>Prefer a call?</b> Leave your mobile number and we'll call you with today's rate.</p>
+          <form novalidate>
+            <input name="phone" type="tel" inputmode="tel" autocomplete="tel-national" maxlength="18" placeholder="10-digit mobile number" aria-label="Your mobile number" />
+            <button class="btn btn--primary" type="submit">${ic("i-phone")}Call me</button>
+          </form>
+          <p class="cu-rate__msg" aria-live="polite"></p>
+        </div>`}
 
         <ul class="cu-points">
           <li>${ic("i-check")}Sample collected at your home by a Thyrocare-certified team</li>

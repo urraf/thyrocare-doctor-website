@@ -374,8 +374,8 @@
      PAGES
      ========================================================== */
   const VIEWS = {};
-  const LEAD_TEXT = { booking: "Wants a home collection", prescription: "Sent a prescription", enquiry: "Asked rates for a test list" };
-  const LEAD_ICON = { booking: "a-cal", prescription: "a-file", enquiry: "a-list" };
+  const LEAD_TEXT = { booking: "Wants a home collection", prescription: "Sent a prescription", enquiry: "Asked rates for a test list", rate: "Wants today's rate · call them back" };
+  const LEAD_ICON = { booking: "a-cal", prescription: "a-file", enquiry: "a-list", rate: "a-phone" };
   const isDone = (l) => l.status === "done" || l.status === "contacted";
 
   /* ---------- Home ---------- */
@@ -594,8 +594,10 @@
       </div>
       <div class="toggles">
         ${switchHtml("visible", it.visible !== false, "Show on website")}
+        ${switchHtml("showPrice", !it.hidePrice, "Show price")}
         ${switchHtml("best", it.best, isCheckup ? "Show “Most popular” badge" : "Show “Best value” badge")}
       </div>
+      <p class="muted small">Turn off <b>Show price</b> when rates change often: visitors see a <b>“Get today's rate”</b> button instead, and their request comes to WhatsApp or to Requests.</p>
       <div data-sections></div>
       <details class="more">
         <summary>More options <em>(optional)</em></summary>
@@ -632,6 +634,7 @@
           tagline: isCheckup ? v("tagline") : it.tagline || "", desc: v("desc"), note: v("note"), code: v("code"),
           concerns: $$("[name=concerns]:checked", f).map((x) => x.value),
           visible: f.elements.visible.checked, best: f.elements.best.checked, fasting: f.elements.fasting.checked,
+          hidePrice: !f.elements.showPrice.checked,
           image: isCheckup ? v("image") || null : it.image || null,
           groups: sections ? sections.read() : it.groups || [],
         };
@@ -660,10 +663,15 @@
           </button>
           <div class="pcard__body">
             <b>${esc(p.name)}</b>
-            <div class="pcard__meta"><span>${p.params ? p.params + " tests" : ""}</span><strong>${inr(p.price)}</strong></div>
+            <div class="pcard__meta"><span>${p.params ? p.params + " tests" : ""}</span><strong class="${p.hidePrice ? "is-off" : ""}">${inr(p.price)}</strong></div>
+            ${p.hidePrice ? '<small class="pcard__note">Visitors see “Get today\'s rate”</small>' : ""}
+          </div>
+          <div class="pcard__toggles">
+            <label class="switch switch--sm"><input type="checkbox" data-vis ${p.visible ? "checked" : ""} aria-label="Show ${esc(p.name)} on website" /><i></i><span>On website</span></label>
+            <label class="switch switch--sm"><input type="checkbox" data-showprice ${p.hidePrice ? "" : "checked"} aria-label="Show price of ${esc(p.name)}" /><i></i><span>Show price</span></label>
           </div>
           <div class="pcard__acts">
-            <label class="switch switch--sm"><input type="checkbox" data-vis ${p.visible ? "checked" : ""} aria-label="Show ${esc(p.name)} on website" /><i></i><span>On website</span></label>
+            <span class="muted small">Order</span>
             <span class="spacer"></span>
             <button type="button" class="iconbtn" data-mv="-1" aria-label="Move earlier" title="Move earlier" ${i === 0 ? "disabled" : ""}>${ic("a-left")}</button>
             <button type="button" class="iconbtn" data-mv="1" aria-label="Move later" title="Move later" ${i === arr.length - 1 ? "disabled" : ""}>${ic("a-right")}</button>
@@ -691,6 +699,12 @@
       });
     });
     grid.addEventListener("change", (e) => {
+      const sp = e.target.closest("[data-showprice]");
+      if (sp) {
+        const item = findItem(sp.closest("[data-id]").dataset.id);
+        return run(sp, async () => { await saveItem(item, { hidePrice: !sp.checked }); draw(); toast(sp.checked ? "Price is now shown on your website" : "Price hidden. Visitors see “Get today's rate”"); })
+          .then(() => { if (item.hidePrice === sp.checked) draw(); });
+      }
       const v = e.target.closest("[data-vis]"); if (!v) return;
       const item = findItem(v.closest("[data-id]").dataset.id);
       run(v, async () => { await saveItem(item, { visible: v.checked }); draw(); toast(v.checked ? "Now showing on your website" : "Hidden from your website"); })
@@ -718,7 +732,7 @@
       const arr = q ? all.filter((x) => (x.name + " " + x.code + " " + x.category).toLowerCase().includes(q.toLowerCase())) : all;
       rows.innerHTML = arr.length ? arr.map((x) => `
         <div class="prow${x.visible ? "" : " is-hidden"}" data-id="${x.id}">
-          <button type="button" class="prow__name" data-edit><b>${esc(x.name)}</b><small>${esc(x.category || "")}${x.visible ? "" : " · Hidden"}</small></button>
+          <button type="button" class="prow__name" data-edit><b>${esc(x.name)}</b><small>${esc(x.category || "")}${x.visible ? "" : " · Hidden"}${x.hidePrice ? " · Price hidden (shows “Get today's rate”)" : ""}</small></button>
           <label class="price-in"><span aria-hidden="true">₹</span><input data-price inputmode="decimal" value="${x.price ?? ""}" placeholder="Ask" aria-label="Price of ${esc(x.name)}" /></label>
           <label class="switch switch--sm"><input type="checkbox" data-vis ${x.visible ? "checked" : ""} aria-label="Show ${esc(x.name)} on website" /><i></i><span class="prow__lbl">On website</span></label>
           <button type="button" class="iconbtn" data-edit aria-label="Edit ${esc(x.name)}">${ic("a-edit")}</button>

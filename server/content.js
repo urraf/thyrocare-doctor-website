@@ -28,9 +28,10 @@ export const slugify = (s) => String(s || "").toLowerCase().normalize("NFKD").re
 
 export const getSettings = async () => (await col("settings").findOne({ _id: "site" })) || {};
 
+// A hidden price never leaves the server (not even in the page source).
 const publicItem = (d) => ({
   id: String(d._id), type: d.type, code: d.code, name: d.name, category: d.category, concerns: d.concerns || [],
-  price: d.price ?? null, mrp: d.mrp ?? null, params: d.params ?? null, desc: d.desc, tagline: d.tagline,
+  price: d.hidePrice ? null : d.price ?? null, mrp: d.hidePrice ? null : d.mrp ?? null, priceHidden: !!d.hidePrice, params: d.params ?? null, desc: d.desc, tagline: d.tagline,
   includes: d.includes || [], groups: d.groups || [], note: d.note, fasting: !!d.fasting, best: !!d.best,
   featured: !!d.featured, image: mediaUrl(d.image), updatedAt: d.updatedAt ? new Date(d.updatedAt).toISOString() : null,
 });

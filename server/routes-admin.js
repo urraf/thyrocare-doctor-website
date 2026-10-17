@@ -34,6 +34,7 @@ const SCHEMAS = {
         return { name: str(gr?.name, 140), count: num(gr?.count, { max: 500 }) ?? items.length, items };
       }).filter((gr) => gr.name),
       fasting: bool(b.fasting), best: bool(b.best), featured: bool(b.featured), visible: b.visible === undefined ? true : bool(b.visible),
+      hidePrice: bool(b.hidePrice), // rates change often: keep the price saved but show "Get today's rate"
       image: await publicMediaId(b.image),
     };
   },
@@ -186,7 +187,7 @@ export function adminRouter() {
     const q = {};
     if (req.query.status === "new") q.status = "new";
     else if (req.query.status === "done") q.status = { $in: ["done", "contacted"] };
-    if (["booking", "prescription", "enquiry"].includes(req.query.type)) q.type = req.query.type;
+    if (["booking", "prescription", "enquiry", "rate"].includes(req.query.type)) q.type = req.query.type;
     const s = str(req.query.q, 60);
     if (s) {
       const rx = new RegExp(s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");

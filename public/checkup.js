@@ -26,3 +26,23 @@
     sync();
   }
 })();
+
+/* "Call me back with today's rate" (shown when the price is hidden) */
+(function () {
+  "use strict";
+  var box = document.querySelector("[data-rate]");
+  if (!box) return;
+  var form = box.querySelector("form"), msg = box.querySelector(".cu-rate__msg");
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var phone = form.phone.value.replace(/\D/g, "").replace(/^(91|0)(?=\d{10}$)/, "");
+    if (!/^[6-9]\d{9}$/.test(phone)) { msg.className = "cu-rate__msg bad"; msg.textContent = "Please enter a valid 10-digit mobile number."; form.phone.focus(); return; }
+    var btn = form.querySelector("button"); btn.disabled = true;
+    var fd = new FormData();
+    fd.append("type", "rate"); fd.append("phone", phone); fd.append("items", box.getAttribute("data-rate"));
+    fetch("/api/leads", { method: "POST", body: fd })
+      .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d.error || "Could not send"); return d; }); })
+      .then(function (d) { form.hidden = true; msg.className = "cu-rate__msg ok"; msg.textContent = "✓ Thank you! We'll call you shortly with today's rate. (Ref " + d.ref + ")"; })
+      .catch(function (err) { msg.className = "cu-rate__msg bad"; msg.textContent = err.message + " Please use WhatsApp or call us."; btn.disabled = false; });
+  });
+})();

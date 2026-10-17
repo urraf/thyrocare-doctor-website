@@ -188,6 +188,9 @@ button { cursor: pointer; }
 .pcard__meta { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: .84rem; color: var(--muted); }
 .pcard__meta strong { color: var(--red); font-size: 1.1rem; }
 .pcard__acts { display: flex; gap: 6px; align-items: center; padding: 8px 14px; }
+.pcard__toggles { display: grid; gap: 8px; padding: 10px 14px 2px; }
+.pcard__meta strong.is-off { color: var(--muted); font-size: .9rem; }
+.pcard__note { color: var(--wa); font-weight: 700; font-size: .78rem; }
 .pcard__edit { margin: 0 14px 14px; width: auto; }
 .pcard--add { border: 2px dashed var(--line-2); background: transparent; display: grid; place-content: center; justify-items: center; min-height: 320px; color: var(--blue); font-weight: 800; gap: 10px; text-align: center; }
 .pcard--add:hover { background: var(--sky); }
@@ -328,7 +331,7 @@ dialog::backdrop { background: rgba(11,27,51,.5); }
   .pgrid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .pcard--add { min-height: 220px; }
   .pcard__acts { padding: 8px 10px; }
-  .pcard__acts .switch span { display: none; }
+  .pcard__toggles { padding: 8px 10px 0; }
   .pcard__edit { margin: 0 10px 10px; }
   .pcard__body { padding: 10px 10px 2px; }
   .grp__head { grid-template-columns: 1fr 84px 40px; }
